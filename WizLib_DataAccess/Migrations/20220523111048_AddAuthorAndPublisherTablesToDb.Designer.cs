@@ -2,15 +2,17 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using WizLib_DataAccess.Data;
 
 namespace WizLib_DataAccess.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20220523111048_AddAuthorAndPublisherTablesToDb")]
+    partial class AddAuthorAndPublisherTablesToDb
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -20,7 +22,7 @@ namespace WizLib_DataAccess.Migrations
 
             modelBuilder.Entity("WizLib_Models.Models.Author", b =>
                 {
-                    b.Property<int>("Author_Id")
+                    b.Property<int>("Publisher_Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int")
                         .UseIdentityColumn();
@@ -39,7 +41,7 @@ namespace WizLib_DataAccess.Migrations
                     b.Property<string>("Location")
                         .HasColumnType("nvarchar(max)");
 
-                    b.HasKey("Author_Id");
+                    b.HasKey("Publisher_Id");
 
                     b.ToTable("Authors");
                 });
