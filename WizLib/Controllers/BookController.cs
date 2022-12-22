@@ -21,6 +21,14 @@ namespace WizLib.Controllers
         public IActionResult Index()
         {
             List<Book> objList = _db.Books.ToList();
+            foreach(var obj in objList)
+            {
+                //least efficient
+                // obj.Publisher = _db.Publishers.FirstOrDefault(g => g.Publisher_Id == obj.Publisher_Id);
+
+                //Explicit loading more efficient
+                _db.Entry(obj).Reference(u => u.Publisher).Load();
+            }
             return View(objList);
         }
 
@@ -45,86 +53,34 @@ namespace WizLib.Controllers
             return View(obj);
         }
 
-        //[HttpPost]
-        //[ValidateAntiForgeryToken]
-        //public IActionResult Upsert(Category obj)
-        //{
-        //    if(ModelState.IsValid)
-        //    {
-        //        if(obj.Category_Id == 0)
-        //        {
-        //            //this is create
-        //            _db.Categories.Add(obj);
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public IActionResult Upsert(BookVM obj)
+        {
+                if (obj.Book.Book_Id == 0)
+                {
+                    //this is create
+                    _db.Books.Add(obj.Book);
+                }
+                else
+                {
+                    //this is update
+                    _db.Books.Update(obj.Book);
+                }
+                _db.SaveChanges();
+                return RedirectToAction(nameof(Index));
 
-        //        }
-        //        else
-        //        {
-        //            //this is update
-        //            _db.Categories.Update(obj);
-        //        }
-        //        _db.SaveChanges();
-        //        return RedirectToAction(nameof(Index));
-        //    }
-        //    return View(obj);
+        }
 
-        //}
-
-        //public IActionResult Delete(int id)
-        //{
-        //    var objFromDB = _db.Categories.FirstOrDefault(o => o.Category_Id == id);
-        //    _db.Categories.Remove(objFromDB);
-        //    _db.SaveChanges();
-        //    return RedirectToAction(nameof(Index));
-        //}
-
-        //public IActionResult CreateMultiple2()
-        //{
-        //    List<Category> catlist = new List<Category>();
-
-        //    for(int i = 1; i<= 2; i++)
-        //    {
-        //        catlist.Add(new Category { Name = Guid.NewGuid().ToString() });
-
-        //       // _db.Categories.Add(new Category { Name = Guid.NewGuid().ToString() });
-        //    }
-        //    _db.Categories.AddRange(catlist);
-        //    _db.SaveChanges();
-        //    return RedirectToAction(nameof(Index));
-        //}
-
-        //public IActionResult CreateMultiple5()
-        //{
-        //    List<Category> catlist = new List<Category>();
-
-        //    for (int i = 1; i <= 5; i++)
-        //    {
-        //        catlist.Add(new Category { Name = Guid.NewGuid().ToString() });
-
-        //        // _db.Categories.Add(new Category { Name = Guid.NewGuid().ToString() });
-        //    }
-        //    _db.Categories.AddRange(catlist);
-        //    _db.SaveChanges();
-        //    return RedirectToAction(nameof(Index));
-        //}
+        public IActionResult Delete(int id)
+        {
+            var objFromDB = _db.Books.FirstOrDefault(o => o.Book_Id == id);
+            _db.Books.Remove(objFromDB);
+            _db.SaveChanges();
+            return RedirectToAction(nameof(Index));
+        }
 
 
-        //public IActionResult RemoveMultiple2()
-        //{
-        //    IEnumerable<Category> catlist = _db.Categories.OrderByDescending(o => o.Category_Id).Take(2).ToList();
-
-        //    _db.Categories.RemoveRange(catlist);
-        //    _db.SaveChanges();
-        //    return RedirectToAction(nameof(Index));
-        //}
-
-        //public IActionResult RemoveMultiple5()
-        //{
-        //    IEnumerable<Category> catlist = _db.Categories.OrderByDescending(o => o.Category_Id).Take(5).ToList();
-
-        //    _db.Categories.RemoveRange(catlist);
-        //    _db.SaveChanges();
-        //    return RedirectToAction(nameof(Index));
-        //}
 
     }
 }
