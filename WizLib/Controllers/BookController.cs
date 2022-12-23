@@ -190,28 +190,35 @@ namespace WizLib.Controllers
 
         public IActionResult PlayGround()
         {
-            var bookTemp = _db.Books.FirstOrDefault();
-            bookTemp.Price = 100;
+            //var bookTemp = _db.Books.FirstOrDefault();
+            //bookTemp.Price = 100;
 
-            var bookCollection = _db.Books;
-            double totalPrice = 0;
+            //var bookCollection = _db.Books;
+            //double totalPrice = 0;
 
-            foreach (var book in bookCollection)
-            {
-                totalPrice += book.Price;
-            }
+            //foreach (var book in bookCollection)
+            //{
+            //    totalPrice += book.Price;
+            //}
 
-            var bookList = _db.Books.ToList();
-            foreach (var book in bookList)
-            {
-                totalPrice += book.Price;
-            }
+            //var bookList = _db.Books.ToList();
+            //foreach (var book in bookList)
+            //{
+            //    totalPrice += book.Price;
+            //}
 
-            var bookCollection2 = _db.Books;
-            var bookCount1 = bookCollection2.Count();
+            //var bookCollection2 = _db.Books;
+            //var bookCount1 = bookCollection2.Count();
 
-            var bookCount2 = _db.Books.Count();
-            return RedirectToAction(nameof(Index));
+            //var bookCount2 = _db.Books.Count();
+            //return RedirectToAction(nameof(Index));
+
+            //Views
+            var viewList = _db.BookDetailsFromView.ToList();
+            var viewList2 = _db.BookDetailsFromView.FirstOrDefault();
+            var viewList3 = _db.BookDetailsFromView.Where(t => t.Price >= 500);
+
+
         }
 
 
