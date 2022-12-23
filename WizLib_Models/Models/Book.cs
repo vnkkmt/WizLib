@@ -18,7 +18,7 @@ namespace WizLib_Models.Models
         [MaxLength(15)]
         public string ISBN { get; set; }
         [Required]
-        public string Price { get; set; }
+        public double Price { get; set; }
         [ForeignKey("BookDetail")]
         public int? BookDetail_Id { get; set; }
         public BookDetail BookDetail { get; set; }
