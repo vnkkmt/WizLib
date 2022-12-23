@@ -5,6 +5,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using WizLib_DataAccess.Data;
 using WizLib_Models.Models;
+using Microsoft.EntityFrameworkCore;
 
 namespace WizLib.Controllers
 {
@@ -18,7 +19,7 @@ namespace WizLib.Controllers
         }
         public IActionResult Index()
         {
-            List<Category> objList = _db.Categories.ToList();
+            List<Category> objList = _db.Categories.AsNoTracking().ToList();
             return View(objList);
         }
 
