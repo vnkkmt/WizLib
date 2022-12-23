@@ -229,6 +229,13 @@ namespace WizLib.Controllers
             //calling SP
             var booksSproc = _db.Books.FromSqlInterpolated($"EXEC dbo.getAllBookDetails {id}").ToList();
 
+
+            //.NET 5only available
+            var BookFilter1 = _db.Books.Include(e => e.BookAuthors.Where(u => u.Author_Id == 1)).ToList();
+            //select top 2 descending
+            var BookFilter2 = _db.Books.Include(e => e.BookAuthors.OrderByDescending(u => u.Author_Id).Take(2)).ToList();
+
+            return RedirectToAction(nameof(Index));
         }
 
 
