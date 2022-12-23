@@ -130,6 +130,54 @@ namespace WizLib.Controllers
             return RedirectToAction(nameof(Index));
         }
 
+        public IActionResult ManageAuthors(int id)
+        {
+            BookAuthorVM obj = new BookAuthorVM
+            {
+                BookAuthorList = _db.BookAuthors.Include(u => u.Author).Include(i => i.Book).Where(u => u.Book_Id == id).ToList(),
+                BookAuthor = new BookAuthor
+                {
+                    Book_Id = id
+                },
+                Book = _db.Books.FirstOrDefault(l => l.Book_Id == id)
+        };
+            List<int> tempListOfAssignedAuthors = obj.BookAuthorList.Select(u => u.Author_Id).ToList();
+
+            //Not in clause in LINQ
+            //to get all authors whos id is not in tempListOfAssingedAuthors
+            var tempList = _db.Authors.Where(u => !tempListOfAssignedAuthors.Contains(u.Author_Id)).ToList();
+
+            obj.AuthorList = tempList.Select(i => new SelectListItem
+            {
+                Text = i.FullName,
+                Value = i.Author_Id.ToString()
+            });
+
+            return View(obj);
+
+        }
+
+        [HttpPost]
+        public IActionResult ManageAuthors(BookAuthorVM bookAuthorVM)
+        {
+            if(bookAuthorVM.BookAuthor.Book_Id != 0 && bookAuthorVM.BookAuthor.Author_Id != 0)
+            {
+                _db.BookAuthors.Add(bookAuthorVM.BookAuthor);
+                _db.SaveChanges();
+            }
+            return RedirectToAction(nameof(ManageAuthors), new { @id = bookAuthorVM.BookAuthor.Book_Id });
+        }
+
+
+        [HttpPost]
+        public IActionResult RemoveAuthors(int authorId, BookAuthorVM bookAuthorVM)
+        {
+            int bookId = bookAuthorVM.Book.Book_Id;
+            BookAuthor bookAuthor = _db.BookAuthors.FirstOrDefault(u => u.Author_Id == authorId && u.Book_Id == bookId);
+            _db.BookAuthors.Remove(bookAuthor);
+            _db.SaveChanges();
+            return RedirectToAction(nameof(ManageAuthors), new { @id = bookId });
+        }
 
         public IActionResult PlayGround()
         {
@@ -156,6 +204,8 @@ namespace WizLib.Controllers
             var bookCount2 = _db.Books.Count();
             return RedirectToAction(nameof(Index));
         }
+
+
 
 
     }
