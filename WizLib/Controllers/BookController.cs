@@ -22,22 +22,25 @@ namespace WizLib.Controllers
         public IActionResult Index()
         {
             //Eager loading better than explicit loading
-            //List<Book> objList = _db.Books.Include(u => u.Publisher).ToList();
-            List<Book> objList = _db.Books.ToList();
+            List<Book> objList = _db.Books
+                .Include(u => u.Publisher)
+                .Include(h => h.BookAuthors).ThenInclude(y => y.Author).ToList();
 
-            foreach (var obj in objList)
-            {
-                ////least efficient
-                 obj.Publisher = _db.Publishers.FirstOrDefault(g => g.Publisher_Id == obj.Publisher_Id);
+            //List<Book> objList = _db.Books.ToList();
 
-                ////Explicit loading more efficient
-                _db.Entry(obj).Reference(u => u.Publisher).Load();
-                _db.Entry(obj).Collection(u => u.BookAuthors).Load();
-                foreach(var bookauth in obj.BookAuthors)
-                {
-                    _db.Entry(bookauth).Reference(o => o.Author).Load();
-                }
-            }
+            //foreach (var obj in objList)
+            //{
+            //    ////least efficient
+            //     obj.Publisher = _db.Publishers.FirstOrDefault(g => g.Publisher_Id == obj.Publisher_Id);
+
+            //    ////Explicit loading more efficient
+            //    _db.Entry(obj).Reference(u => u.Publisher).Load();
+            //    _db.Entry(obj).Collection(u => u.BookAuthors).Load();
+            //    foreach(var bookauth in obj.BookAuthors)
+            //    {
+            //        _db.Entry(bookauth).Reference(o => o.Author).Load();
+            //    }
+            //}
             return View(objList);
         }
 
