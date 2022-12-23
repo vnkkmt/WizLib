@@ -218,6 +218,16 @@ namespace WizLib.Controllers
             var viewList2 = _db.BookDetailsFromView.FirstOrDefault();
             var viewList3 = _db.BookDetailsFromView.Where(t => t.Price >= 500);
 
+            //column names must match that of entity and cannot select individual columns
+            //RAW SQL
+            var bookRaw = _db.Books.FromSqlRaw("select * from dbo.books").ToList();
+
+            //SQL injection prone
+            int id = 1;
+            var bookRaw1 = _db.Books.FromSqlInterpolated($"select * from dbo.books where Book_Id={id}").ToList();
+
+            //calling SP
+            var booksSproc = _db.Books.FromSqlInterpolated($"EXEC dbo.getAllBookDetails {id}").ToList();
 
         }
 
